@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Workout Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #101010;
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            overflow-x: hidden;
+        }
+        .logo {
+            display: block;
+            margin: 50px auto;
+            width: 200px;
+            height: auto;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .logo:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(48, 213, 200, 0.8);
+        }
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+        .popup button {
+            display: block;
+            margin: 10px auto;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #0FFFFF;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        .popup button:hover {
+            background-color: #26b6a3;
+        }
+        .exercise-container {
+            display: none;
+            margin-top: 50px;
+        }
+        .exercise-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            max-width: 1200px;
+            margin: auto;
+        }
+        .exercise-card {
+            background: #0FFFFF;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+        .exercise-card:hover {
+            transform: scale(1.05);
+        }
+        .exercise-card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .back-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            background-color: #0FFFFF;
+            border: none;
+            color: white;
+            font-size: 1.2em;
+            cursor: pointer;
+            border-radius: 5px;
+            z-index: 10;
+            transition: background-color 0.3s;
+        }
+        .back-button:hover {
+            background-color: #26b6a3;
+        }
+        .second-back-button {
+            display: none;
+            position: fixed;
+            top: 70px;
+            left: 20px;
+            padding: 10px 20px;
+            background-color: #0FFFFF;
+            border: none;
+            color: white;
+            font-size: 1.2em;
+            cursor: pointer;
+            border-radius: 5px;
+            z-index: 10;
+            transition: background-color 0.3s;
+        }
+        .second-back-button:hover {
+            background-color: #26b6a3;
+        }
+        .routine-buttons {
+            position: fixed;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+        }
+        .routine-buttons button {
+            margin: 10px;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #0FFFFF;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        .routine-buttons button:hover {
+            background-color: #26b6a3;
+        }
+        .zoomed-exercise {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+            display: none;
+            z-index: 20;
+        }
+        .zoomed-exercise img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+        .zoomed-exercise p {
+            color: #0FFFFF;
+            font-size: 1.5em;
+            margin-top: 10px;
+        }
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #e53d2e;
+            border: none;
+            color: white;
+            font-size: 1.2em;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .close-button:hover {
+            background-color: #c32b20;
+        }
+    </style>
+</head>
+<body>
+    <img src="C:\Users\Atharva Padwal\Downloads\Screenshot 2025-02-15 185319.png" alt="Logo" class="logo">
+
+    <button class="back-button" onclick="goBackToMain()">Back</button>
+
+    <div class="popup" id="workoutPopup">
+        <h2>Select Workout Type</h2>
+        <button onclick="showExercises('home')">Home Workout</button>
+        <button onclick="showExercises('gym')">Gym Workout</button>
+        <button onclick="showExercises('yoga')">Yoga</button>
+    </div>
+
+    <button class="second-back-button" id="secondBackButton" onclick="goBack()">Back to Workout</button>
+
+    <div class="exercise-container" id="exerciseContainer">
+        <h2 id="workoutTitle"></h2>
+        <div class="exercise-grid" id="exerciseList"></div>
+    </div>
+
+    <div class="routine-buttons" id="routineButtons">
+        <button onclick="window.location.href='male.html'">Workout Routine for Males</button>
+        <button onclick="window.location.href='female.html'">Workout Routine for Females</button>
+        <button onclick="window.location.href='injury.html'">Injury and Recovery</button>
+    </div>
+
+    <div class="zoomed-exercise" id="zoomedExercise">
+        <button class="close-button" onclick="closeZoom()">Close</button>
+        <img id="zoomedExerciseImg" src="" alt="">
+        <p id="zoomedExerciseName"></p>
+    </div>
+
+    <script>
+        const workouts = {
+            home: [
+                { name: "Push-ups", img: "https://d39ziaow49lrgk.cloudfront.net/wp-content/uploads/2016/03/Perfect_Push_Up.gif" },
+                { name: "Squats", img: "https://www.fitneass.com/wp-content/uploads/2019/04/Squat-Exercise.gif" },
+                { name: "Lunges", img: "https://cdn.jefit.com/assets/img/exercises/gifs/136.gif" },
+                { name: "Plank", img: "https://i0.wp.com/catchspaces.sfo2.digitaloceanspaces.com/nepalbuzz/2018/03/Doing-Planks.jpg?fit=940%2C627&ssl=1" },
+                { name: "Jumping Jacks", img: "https://cobaboard.com/cdn/shop/files/jumping-jacks.gif?v=1682958413" },
+                { name: "Burpees", img: "https://img.livestrong.com/630x/ppds/940ca2f5-2b16-4810-b940-eca178e2dd72.gif" },
+                { name: "Crunches", img: "https://c.tenor.com/7TpDG7weEnEAAAAM/crunches-exercise.gif" },
+                { name: "Leg Raises", img: "https://hips.hearstapps.com/hmg-prod.s3.amazonaws.com/images/766/fitgif-friday-lying-leg-raise-slider-thumbnail-override-1515520081.gif" },
+                { name: "Mountain Climbers", img: "https://hips.hearstapps.com/hmg-prod/images/766/fitgif-friday-mini-band-mountain-climb-thumbnail-override-1515520802.gif" },
+                { name: "Triceps Dips", img: "https://fitliferegime.com/wp-content/uploads/2022/08/How-To-Do-Tricep-Dips.gif" },
+                { name: "Wall Sit", img: "https://media.post.rvohealth.io/wp-content/uploads/sites/2/2020/08/400x400_9964_Why_a_Wall_is_the_Perfect_Workout_Equipment_Wall_Sit_Clam.gif" },
+                { name: "High Knees", img: "https://i.pinimg.com/originals/6d/64/08/6d6408cca5ae5d77d8bab4881deecb59.gif" }
+            ],
+            gym: [
+                { name: "Bench Press", img: "https://s.yimg.com/uu/api/res/1.2/fTWpeQGb2OLjpIDCnTgX4A--~B/aD0zMzM7dz01MDA7YXBwaWQ9eXRhY2h5b24-/http://magazines.zenfs.com/diminuendo/1.0/original/221af55f7c5f5ade6ad0a14c232c39486a3525d4.gif" },
+                { name: "Deadlift", img: "https://sporium.net/wp-content/uploads/2020/06/deadlift-2.gif" },
+                { name: "Squats", img: "https://cdn.greatlifepublishing.net/wp-content/uploads/sites/6/2017/11/27173118/squats.gif" },
+                { name: "Lat Pulldown", img: "https://my-trakk.com/media/instructional-videos/inst_gif_312.gif" },
+                { name: "Shoulder Press", img: "https://149874912.v2.pressablecdn.com/wp-content/uploads/2020/02/Dumbbell-shoulder-press.gif" },
+                { name: "Bicep Curls", img: "https://th.bing.com/th/id/R.1da97bbc018cf4482b3776325e7be523?rik=pw9F6EnWNnje9Q&riu=http%3a%2f%2fassets.menshealth.co.uk%2fmain%2fassets%2fbicepcurl.gif%3fmtime%3d1429703015&ehk=ldzKPdS0hJpjgrpi8jQffL6MZeu9LwO1xvI9uGnopVM%3d&risl=&pid=ImgRaw&r=0" },
+                { name: "Leg Press", img: "https://www.verywellfit.com/thmb/UpX7j7SzAYKrJYn0vp1LjQ5ZOTg=/768x0/filters:no_upscale():max_bytes(150000):strip_icc()/50-3498610-Leg-Press-GIF-689350b314ef47f4802f7fc74349b410.gif" },
+                { name: "Cable Rows", img: "https://i.makeagif.com/media/4-28-2015/ibwPMp.gif" },
+                { name: "Dumbbell Flys", img: "https://learningjoan.com/wp-content/uploads/2020/04/Incline-Dumbbell-Flies.gif" },
+                { name: "Pull-ups", img: "https://media.giphy.com/media/jVZFKDqkbxDEkbfGUA/giphy.gif" },
+                { name: "Calf Raises", img: "https://www.bodybuildingmealplan.com/wp-content/uploads/Seated-Calf-Raise-GIF.gif" },
+                { name: "Triceps Pushdown", img: "https://cdn.shopify.com/s/files/1/0250/0362/2496/files/396.gif?v=1644657999" }
+            ],
+            yoga: [
+                { name: "Suryanamaskar", img: "https://artimg.gympik.com/articles/wp-content/uploads/2020/02/surya-namaskar-gif-3.gif" },
+                { name: "Balasan", img: "https://www.verywellfit.com/thmb/EjwZhV4bRMIU7A-cWYGaVRMhyIE=/1500x1000/filters:no_upscale():max_bytes(150000):strip_icc()/Verywell-04-2704746-ChildsPosecopy-598b7d0b68e1a2001183ad9b.gif" },
+                { name: "Shavasana", img: "https://i.pinimg.com/736x/73/43/3e/73433ea7de13471c6d2808cd2ac0ebf4.jpg" },
+                { name: "Virbhadrasana", img: "https://i.pinimg.com/originals/bd/e1/aa/bde1aa43224edbc15fcaed511347e98b.gif" },
+                { name: "Bhujangasana", img: "https://www.keralatourism.org/images/yoga/static-banner/large/Bhujangasana_-_The_Cobra_Pose-07032020143931.jpg?w=1480" },
+                { name: "Baddha Konasana", img: "https://th.bing.com/th/id/OIP.ZR2VYD7ofoe_rFKhiZWVjwHaE7?rs=1&pid=ImgDetMain" },
+                { name: "Utkatasana", img: "https://th.bing.com/th/id/OIP.rPUK0ez7bXuqfc7RT7jdmQHaKZ?rs=1&pid=ImgDetMain" },
+                { name: "Setu Bandhasana", img: "https://img.freepik.com/premium-photo/setu-bandhasana-setu-bandha-sarvangasana-bridge-pose-slender-sports-girl-does-yoga-performs-asana-white-background-side-view_134398-16500.jpg?w=1480" },
+                { name: "Paschimottanasana", img: "https://media.post.rvohealth.io/wp-content/uploads/2023/05/Seated-Forward-Bend.gif" },
+                { name: "Navasana", img: "https://i0.wp.com/blog.practyce.com/wp-content/uploads/2022/06/navasana.jpg?fit=1200%2C800&ssl=1" },
+                { name: "Padmasana", img: "https://th.bing.com/th/id/OIP.ocNtfykG_0vEHpYUAeVuNAHaIV?rs=1&pid=ImgDetMain" },
+                { name: "Plow Pose", img: "https://th.bing.com/th/id/OIP.zGsVdjU7keCNMfJ6Uz8C-AHaF0?rs=1&pid=ImgDetMain" }
+            ]
+        };
+
+        function showExercises(type) {
+            document.getElementById("workoutPopup").style.display = "none";
+            document.getElementById("exerciseContainer").style.display = "block";
+            document.getElementById("secondBackButton").style.display = "block";
+            document.getElementById("routineButtons").style.display = "none";
+
+            document.getElementById("workoutTitle").innerText = type.charAt(0).toUpperCase() + type.slice(1) + " Workout";
+
+            const exerciseList = document.getElementById("exerciseList");
+            exerciseList.innerHTML = workouts[type].map(exercise => ` 
+                <div class="exercise-card" onclick="zoomExercise('${exercise.img}', '${exercise.name}')">
+                    <img src="${exercise.img}" alt="${exercise.name}">
+                    <p>${exercise.name}</p>
+                </div>
+            `).join('');
+        }
+
+        function zoomExercise(img, name) {
+            document.getElementById("zoomedExerciseImg").src = img;
+            document.getElementById("zoomedExerciseName").innerText = name;
+            document.getElementById("zoomedExercise").style.display = "block";
+        }
+
+        function closeZoom() {
+            document.getElementById("zoomedExercise").style.display = "none";
+        }
+
+        function goBack() {
+            document.getElementById("exerciseContainer").style.display = "none";
+            document.getElementById("workoutPopup").style.display = "block";
+            document.getElementById("secondBackButton").style.display = "none";
+            document.getElementById("routineButtons").style.display = "block";
+        }
+
+        function goBackToMain() {
+            const data = JSON.parse(localStorage.getItem('fitnessData'));
+            if (data) {
+                const params = new URLSearchParams(data);
+                window.location.href = `result.html?${params.toString()}`;
+            } else {
+                window.location.href = "index.html";
+            }
+        }
+    </script>
+</body>
+</html>
+

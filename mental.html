@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fitness & Mental Well-being</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #101010;
+            color: #0FFFFF;
+        }
+
+        header {
+            background-color: #101010;
+            padding: 1em 0;
+            text-align: center;
+            position: relative;
+        }
+
+        header img {
+            width: 100px;
+            transition: transform 0.3s ease;
+        }
+
+        header img:hover {
+            transform: scale(1.1);
+        }
+
+        main {
+            padding: 2em;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        section {
+            margin-bottom: 2em;
+        }
+
+        h1, h2 {
+            color: #0FFFFF;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        ul li {
+            background-color: #1c1c1c;
+            margin: 0.5em 0;
+            padding: 1em;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .feature-info {
+            display: none;
+            margin-top: 1em;
+            padding: 1em;
+            background-color: #101010;
+            border-left: 5px solid #0FFFFF;
+        }
+
+        .tracker {
+            display: flex;
+            flex-direction: column;
+            gap: 1em;
+        }
+
+        .tracker input, .tracker select {
+            padding: 0.5em;
+            border-radius: 5px;
+            border: 1px solid #0FFFFF; /* Ensure border is visible */
+            background-color: #1c1c1c; /* Background color for inputs */
+            color: #0FFFFF; /* Text color for inputs */
+        }
+
+        .tracker button {
+            padding: 0.5em;
+            border-radius: 5px;
+            border: none;
+            background-color: #0FFFFF;
+            color: #101010;
+            cursor: pointer;
+        }
+
+        .tracker button:hover {
+            background-color: #0bbbbb;
+        }
+
+        .breathing-exercises img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-right: 1em;
+            transition: transform 0.3s ease;
+        }
+
+        .breathing-exercises img:hover {
+            cursor: pointer;
+            transform: scale(1.1);
+        }
+
+        .breathing-exercises .exercise {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1em;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2em;
+        }
+
+        .button-container button {
+            padding: 0.5em 1em;
+            border-radius: 5px;
+            border: none;
+            background-color: #0FFFFF;
+            color: #101010;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .button-container button:hover {
+            background-color: #0bbbbb;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.9);
+        }
+
+        .modal-content {
+            margin: 15% auto;
+            display: block;
+            width: 80%;
+            max-width: 700px;
+        }
+
+        .close {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            color: #FFFFFF;
+            font-size: 40px;
+            font-weight: bold;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .close:hover, .close:focus {
+            color: #BBB;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .mood-chart {
+            margin-top: 2em;
+            background-color: #1c1c1c;
+            padding: 1em;
+            border-radius: 5px;
+        }
+
+        .mood-chart table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .mood-chart th, .mood-chart td {
+            border: 1px solid #0FFFFF;
+            padding: 0.5em;
+            text-align: center;
+        }
+
+        .mood-chart th {
+            background-color: #101010;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const features = document.querySelectorAll('ul li');
+            features.forEach(feature => {
+                feature.addEventListener('click', () => {
+                    const info = feature.querySelector('.feature-info');
+                    if (info.style.display === 'block') {
+                        info.style.display = 'none';
+                    } else {
+                        info.style.display = 'block';
+                    }
+                });
+            });
+
+            document.getElementById('stress-submit').addEventListener('click', () => {
+                const level = document.getElementById('stress-level').value;
+                const date = document.getElementById('stress-date').value;
+                if (level && date) {
+                    alert(`Stress level of ${level} recorded for ${date}`);
+                } else {
+                    alert('Please fill in all fields');
+                }
+            });
+
+            document.getElementById('sleep-submit').addEventListener('click', () => {
+                const hours = document.getElementById('sleep-hours').value;
+                const date = document.getElementById('sleep-date').value;
+                if (hours && date) {
+                    alert(`Sleep duration of ${hours} hours recorded for ${date}`);
+                } else {
+                    alert('Please fill in all fields');
+                }
+            });
+
+            // Modal functionality for breathing exercise images
+            const modal = document.getElementById("myModal");
+            const modalImg = document.getElementById("img01");
+            const captionText = document.getElementById("caption");
+            const images = document.querySelectorAll('.breathing-exercises img');
+            images.forEach(img => {
+                img.addEventListener('click', () => {
+                    modal.style.display = "block";
+                    modalImg.src = img.src;
+                    captionText.innerHTML = img.nextElementSibling.innerText;
+                });
+            });
+
+            const span = document.getElementsByClassName("close")[0];
+            span.onclick = function() { 
+                modal.style.display = "none";
+            }
+        });
+    </script>
+</head>
+<body>
+    <header>
+        <img src="C:\\Users\\Atharva Padwal\\Downloads\\Screenshot 2025-02-15 185319.png" alt="Website Logo">
+        <h1>Fitness & Mental Well-being</h1>
+    </header>
+    <main>
+        <div class="button-container">
+            <button onclick="window.location.href='fitness.html'">Back</button>
+            <button onclick="window.location.href='frustration.html'">Frustration Remover</button>
+        </div>
+        <section id="features">
+            <h2>Features</h2>
+            <ul>
+                <li>
+                    Mindfulness & Meditation Guide
+                    <div class="feature-info">
+                        <h3>Mindfulness & Meditation Guide</h3>
+                        <p>Welcome to our Mindfulness & Meditation Guide! Here are some resources to get you started:</p>
+                        <ul>
+                            <li><a href="https://www.mindful.org/meditation/mindfulness-getting-started/">Mindfulness: Getting Started</a></li>
+                            <li><a href="https://www.headspace.com/meditation/meditation-for-beginners">Meditation for Beginners</a></li>
+                            <li><a href="https://www.calm.com/">Calm - Guided Meditation</a></li>
+                        </ul>
+                    </div>
+                </li>
+                <li>
+                    Stress & Anxiety Tracker
+                    <div class="feature-info">
+                        <h3>Stress & Anxiety Tracker</h3>
+                        <div class="tracker">
+                            <label for="stress-level">Stress Level (1-10):</label>
+                            <input type="number" id="stress-level" min="1" max="10">
+                            <label for="stress-date">Date:</label>
+                            <input type="date" id="stress-date">
+                            <button id="stress-submit">Submit</button>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    Daily Affirmations
+                    <div class="feature-info">Show positive affirmations to boost motivation and mental well-being.</div>
+                </li>
+                <li>
+                    Sleep Quality Tracker
+                    <div class="feature-info">
+                        <h3>Sleep Quality Tracker</h3>
+                        <div class="tracker">
+                            <label for="sleep-hours">Hours of Sleep:</label>
+                            <input type="number" id="sleep-hours" min="1" max="24">
+                            <label for="sleep-date">Date:</label>
+                            <input type="date" id="sleep-date">
+                            <button id="sleep-submit">Submit</button>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    Journaling Section
+                    <div class="feature-info">A space for users to write down their thoughts, gratitude, or progress.</div>
+                </li>
+                <li>
+                    Mental Fitness Challenges
+                    <div class="feature-info">Weekly or monthly challenges focusing on mindfulness, positive thinking, or emotional resilience.</div>
+                </li>
+                <li>
+                    Breathing Exercises
+                    <div class="feature-info">
+                        <h3>Breathing Exercises</h3>
+                        <div class="breathing-exercises">
+                            <div class="exercise">
+                                <img src="https://post.healthline.com/wp-content/uploads/2022/11/400x400_Breathing_Techniques_For_Stress_Relief_and_More_Deep_Breathing.gif" alt="Deep Breathing">
+                                <p>Deep Breathing - <a href="https://www.healthline.com/health/deep-breathing-exercises">Learn More</a></p>
+                            </div>
+                            <div class="exercise">
+                                <img src="https://th.bing.com/th/id/OIP._KpUDxhqZLDhReqJy7gUMgHaHa?rs=1&pid=ImgDetMain" alt="Box Breathing">
+                                <p>Box Breathing - <a href="https://www.webmd.com/balance/what-is-box-breathing">Learn More</a></p>
+                            </div>
+                            <div class="exercise">
+                                <img src="https://opryshok.com/wp-content/uploads/2023/10/424-breathing.gif" alt="4-7-8 Breathing">
+                                <p>4-7-8 Breathing - <a href="https://www.medicalnewstoday.com/articles/324417">Learn More</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    Mood-Based Workout & Diet Suggestions
+                    <div class="feature-info">
+                        <h3>Mood-Based Workout & Diet Suggestions</h3>
+                        <div class="mood-chart">
+                            <h4>Mood-Based Diet & Workout Chart</h4>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Mood</th>
+                                        <th>Diet Suggestion</th>
+                                        <th>Workout Suggestion</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>High Stress</td>
+                                        <td>Light, easily digestible foods like salads, smoothies, and soups</td>
+                                        <td>Yoga, light stretching, or a gentle walk</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Low Energy</td>
+                                        <td>Energy-boosting foods like nuts, fruits, and whole grains</td>
+                                        <td>Moderate cardio or a brisk walk</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Feeling Blue</td>
+                                        <td>Comfort foods with a healthy twist like oatmeal, dark chocolate, and berries</td>
+                                        <td>Cardio workouts or a fun dance session</td>
+                                    </tr>
+                                    <tr>
+                                        <td>High Energy</td>
+                                        <td>Protein-rich foods like lean meats, beans, and quinoa</td>
+                                        <td>High-intensity interval training (HIIT) or strength training</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </li>
+                <li>
+                    Social Support & Community
+                    <div class="feature-info">A forum or chat space where users can share experiences and support each other.</div>
+                </li>
+                <li>
+                    Expert Advice Section
+                    <div class="feature-info">Articles or Q&A sessions with mental health professionals on topics like motivation, overcoming stress, and self-discipline.</div>
+                </li>
+            </ul>
+        </section>
+    </main>
+
+    <!-- The Modal -->
+    <div id="myModal" class="modal">
+        <span class="close">&times;</span>
+        <img class="modal-content" id="img01">
+        <div id="caption"></div>
+    </div>
+</body>
+</html>

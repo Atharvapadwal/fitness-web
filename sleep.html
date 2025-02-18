@@ -1,0 +1,206 @@
+<<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Hours</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #101010, #101010);
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+        .container {
+            background-color: #101010;
+            padding: 20px;
+            margin: 50px auto;
+            width: 80%;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(46, 204, 113, 0.5);
+        }
+        .logo {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .logo img {
+            height: 80px; /* Adjust this value as needed */
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .logo:hover img {
+            transform: scale(1.1); /* Slightly enlarge the logo on hover */
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.6); /* Add a glowing effect */
+        }
+        .button {
+            padding: 12px 20px;
+            margin: 10px;
+            background-color: #0FFFFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            transition: background-color 0.3s ease;
+        }
+        .button:hover {
+            background-color: #1ba7a6;
+        }
+        .meal-container {
+            display: none;
+            margin-top: 20px;
+        }
+        .chart-container {
+            width: 50%;
+            max-width: 300px;
+            margin: 20px auto;
+        }
+        table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+        th {
+            background-color:#0FFFFF;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="C:/Users/Atharva Padwal/Downloads/Screenshot%202025-02-15%20185319.png" alt="FitTrack Logo"> <!-- Replace "logo.png" with the path to your logo image -->
+        </div>
+        <h1>Happy Hours - Cheat Meal Selection</h1>
+        <button class="button" onclick="showOptions('cut')">Cheat Meal for Cut</button>
+        <button class="button" onclick="showOptions('bulk')">Cheat Meal for Bulk</button>
+        <button class="button" onclick="showOptions('maintain')">Cheat Meal for Maintain</button>
+        <button class="button" onclick="goBack()">Back</button>
+        
+        <div id="drinkOptions" class="meal-container">
+            <h2>Choose Your Preference</h2>
+            <button class="button" onclick="showMeal('with')">For Drinkers</button>
+            <button class="button" onclick="showMeal('without')">For Non-Drinkers</button>
+        </div>
+
+        <div id="mealDetails" class="meal-container"></div>
+    </div>
+
+    <script>
+        let currentGoal = '';
+
+        function showOptions(goal) {
+            currentGoal = goal;
+            document.getElementById('drinkOptions').style.display = 'block';
+            document.getElementById('mealDetails').style.display = 'none';
+            launchConfetti();
+        }
+
+        function showMeal(type) {
+            let mealPlan = {
+                cut: {
+                    with: {
+                        drink: "Whiskey (100ml) - 250 kcal, 40% alcohol<br>Wine (150ml) - 125 kcal, 12% alcohol",
+                        snacks: "Veg: Roasted peanuts, Sprouts chaat<br>Non-Veg: Grilled chicken skewers, Fish tikka<br>Vegan: Grilled tofu, Veggie sticks with hummus",
+                        junk: "Veg: Paneer tikka, Masala papad<br>Non-Veg: Hakka noodles, Chicken wings<br>Vegan: Vegan burger, Sweet potato fries"
+                    },
+                    without: {
+                        drink: "Diet Coke - 0 kcal<br>Fresh lime soda - 50 kcal",
+                        snacks: "Veg: Sprouts chaat, Corn chaat<br>Non-Veg: Egg bhurji, Chicken salad<br>Vegan: Hummus with carrot sticks, Fruit salad",
+                        junk: "Veg: Sev puri, Samosa<br>Non-Veg: Chicken momos, Fish fingers<br>Vegan: Vegan pizza, Tofu stir-fry"
+                    }
+                },
+                bulk: {
+                    with: {
+                        drink: "Beer (500ml) - 200 kcal, 5% alcohol<br>Rum (60ml) - 120 kcal, 42% alcohol",
+                        snacks: "Veg: Cheese nachos, Paneer pakora<br>Non-Veg: Chicken wings, Fish fingers<br>Vegan: Vegan nachos, Edamame",
+                        junk: "Veg: Pav bhaji, Butter naan<br>Non-Veg: Chicken biryani, Kathi roll<br>Vegan: Vegan burrito, Quinoa salad"
+                    },
+                    without: {
+                        drink: "Mango shake - 300 kcal<br>Orange juice - 150 kcal",
+                        snacks: "Veg: Paneer pakora, Veggie sticks with dip<br>Non-Veg: Egg bhurji, Chicken nuggets<br>Vegan: Edamame, Vegan cheese sticks",
+                        junk: "Veg: Vada pav, Misal pav<br>Non-Veg: Chhole bhature, Kanda bhaji<br>Vegan: Vegan sushi, Falafel wrap"
+                    }
+                },
+                maintain: {
+                    with: {
+                        drink: "Rum (60ml) - 120 kcal, 42% alcohol<br>Vodka (60ml) - 130 kcal, 40% alcohol",
+                        snacks: "Veg: Boiled chana, Corn chaat<br>Non-Veg: Fish tikka, Chicken salad<br>Vegan: Veggie sticks with hummus, Fruit salad",
+                        junk: "Veg: Dhokla, Spring rolls<br>Non-Veg: Pav bhaji, Chicken momos<br>Vegan: Vegan pizza, Tofu stir-fry"
+                    },
+                    without: {
+                        drink: "Fresh lime soda - 50 kcal<br>Herbal tea - 0 kcal",
+                        snacks: "Veg: Corn chaat, Paneer roll<br>Non-Veg: Chicken salad, Egg roll<br>Vegan: Hummus with carrot sticks, Fruit salad",
+                        junk: "Veg: Pani puri, Aloo tikki<br>Non-Veg: Frankie roll, Fish fingers<br>Vegan: Vegan burger, Sweet potato fries"
+                    }
+                }
+            };
+
+            let selectedMeal = mealPlan[currentGoal][type];
+            let mealHtml = `
+                <h2>Your Cheat Meal Plan (${currentGoal.toUpperCase()})</h2>
+                <table>
+                    <tr><th>Category</th><th>Items</th></tr>
+                    <tr><td>Drink</td><td>${selectedMeal.drink}</td></tr>
+                    <tr><td>Snacks</td><td>${selectedMeal.snacks}</td></tr>
+                    <tr><td>Junk Food</td><td>${selectedMeal.junk}</td></tr>
+                </table>
+                <div class="chart-container">
+                    <canvas id="macroChart"></canvas>
+                </div>
+            `;
+            document.getElementById('mealDetails').innerHTML = mealHtml;
+            document.getElementById('mealDetails').style.display = 'block';
+            generateChart(type);
+            launchConfetti();
+        }
+
+        function generateChart(type) {
+            let macroData = type === 'with' ? [40, 30, 30] : [50, 20, 30];
+            let ctx = document.getElementById('macroChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: ['Carbs', 'Protein', 'Fat'],
+                    datasets: [{
+                        data: macroData,
+                        backgroundColor: ['#ff6384', '#36a2eb', '#ffcd56'],
+                        borderColor: ['#ff6384', '#36a2eb', '#ffcd56'],
+                        borderWidth: 2,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            labels: { color: 'white' }
+                        }
+                    }
+                }
+            });
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+        function launchConfetti() {
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+        }
+    </script>
+</body>
+</html>
+

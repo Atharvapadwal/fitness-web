@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health and Fitness</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #101010;
+            color: #0FFFFF;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            border: 1px solid #0FFFFF;
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            text-align: center;
+            color: #0FFFFF;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .logo {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .logo img {
+            height: 80px; /* Adjust this value as needed */
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .logo:hover img {
+            transform: scale(1.1); /* Slightly enlarge the logo on hover */
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.6); /* Add a glowing effect */
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        label {
+            color: #30D5C8;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input, select {
+            padding: 12px;
+            border: 1px solid #0FFFFF;
+            border-radius: 8px;
+            background-color: #202020;
+            color: #0FFFFF;
+            font-size: 1em;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            border-color: #1ba7a6;
+        }
+
+        button {
+            padding: 15px;
+            background-color: #0FFFFF;
+            color: #101010;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #1ba7a6;
+        }
+
+        .form-row {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .form-row {
+                flex-direction: row;
+                gap: 20px;
+            }
+
+            .form-row > div {
+                flex: 1;
+            }
+        }
+
+        /* Background Animation */
+        .background-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .background-animation span {
+            position: absolute;
+            display: block;
+            width: 25px;
+            height: 25px;
+            background: rgba(48, 213, 200, 0.2);
+            animation: animate 20s linear infinite;
+            bottom: -150px;
+        }
+
+        .background-animation span:nth-child(1) {
+            left: 10%;
+            width: 80px;
+            height: 80px;
+            animation-duration: 15s;
+        }
+
+        .background-animation span:nth-child(2) {
+            left: 20%;
+            width: 50px;
+            height: 50px;
+            animation-duration: 12s;
+            animation-delay: 2s;
+        }
+
+        .background-animation span:nth-child(3) {
+            left: 25%;
+            width: 100px;
+            height: 100px;
+            animation-duration: 10s;
+            animation-delay: 4s;
+        }
+
+        .background-animation span:nth-child(4) {
+            left: 40%;
+            width: 60px;
+            height: 60px;
+            animation-duration: 18s;
+            animation-delay: 6s;
+        }
+
+        .background-animation span:nth-child(5) {
+            left: 55%;
+            width: 90px;
+            height: 90px;
+            animation-duration: 16s;
+            animation-delay: 8s;
+        }
+
+        .background-animation span:nth-child(6) {
+            left: 70%;
+            width: 40px;
+            height: 40px;
+            animation-duration: 14s;
+            animation-delay: 10s;
+        }
+
+        .background-animation span:nth-child(7) {
+            left: 80%;
+            width: 70px;
+            height: 70px;
+            animation-duration: 20s;
+            animation-delay: 12s;
+        }
+
+        .background-animation span:nth-child(8) {
+            left: 90%;
+            width: 30px;
+            height: 30px;
+            animation-duration: 13s;
+            animation-delay: 14s;
+        }
+
+        @keyframes animate {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+                border-radius: 0;
+            }
+            100% {
+                transform: translateY(-1000px) rotate(720deg);
+                opacity: 0;
+                border-radius: 50%;
+            }
+        }
+
+        /* Back Button */
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 15px;
+            background-color: #0FFFFF;
+            color: #101010;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+            z-index: 2;
+        }
+
+        .back-button:hover {
+            background-color: #1ba7a6;
+        }
+
+    </style>
+</head>
+<body>
+
+<!-- Background Animation -->
+<div class="background-animation">
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+</div>
+
+<!-- Back Button -->
+<button class="back-button" onclick="goBackToFitnessPage()">Back</button>
+
+<div class="container">
+    <div class="logo">
+        <img src="C:/Users/Atharva Padwal/Downloads/Screenshot 2025-02-15 185319.png" alt="FitTrack Logo"> <!-- Replace "logo.png" with the path to your logo image -->
+    </div>
+    <h1>Health and Fitness</h1>
+    <form id="userForm">
+        <div class="form-row">
+            <div>
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div>
+                <label for="age">Age:</label>
+                <input type="number" id="age" name="age" required>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div>
+                <label for="gender">Gender:</label>
+                <select id="gender" name="gender" required>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div>
+                <label for="phone">Phone Number:</label>
+                <input type="text" id="phone" name="phone" required>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div>
+                <label for="heightFeet">Height (Feet):</label>
+                <input type="number" id="heightFeet" name="heightFeet" required>
+            </div>
+            <div>
+                <label for="heightInches">Height (Inches):</label>
+                <input type="number" id="heightInches" name="heightInches" required>
+            </div>
+        </div>
+
+        <div class="form-row">
+            <div>
+                <label for="weight">Weight (kg):</label>
+                <input type="number" id="weight" name="weight" required>
+            </div>
+            <div>
+                <label for="activeness">Activeness Level:</label>
+                <select id="activeness" name="activeness" required>
+                    <option value="sedentary">Sedentary</option>
+                    <option value="lightly active">Lightly Active</option>
+                    <option value="moderately active">Moderately Active</option>
+                    <option value="very active">Very Active</option>
+                </select>
+            </div>
+        </div>
+
+        <label for="goal">Goal:</label>
+        <select id="goal" name="goal" required>
+            <option value="lose">Lose Weight</option>
+            <option value="maintain">Maintain Weight</option>
+            <option value="gain">Gain Weight</option>
+        </select>
+
+        <button type="submit">Submit</button>
+    </form>
+</div>
+
+<script>
+    document.getElementById('userForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        const formData = new FormData(event.target);
+        const queryParams = new URLSearchParams(formData).toString();
+        window.location.href = `result.html?${queryParams}`;
+    });
+
+    function goBackToFitnessPage() {
+        window.location.href = 'fitness.html';
+    }
+</script>
+</body>
+</html>

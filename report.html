@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Health and Fitness Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #101010;
+            color: #30D5C8;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        .logo {
+            margin-top: 10px;
+        }
+
+        .logo img {
+            width: 270px;
+            height: 140px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .logo img:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 20px rgba(48, 213, 200, 0.8);
+        }
+
+        .container {
+            width: 80%;
+            margin: auto;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            margin-top: 50px;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #30D5C8;
+            font-size: 2.5em;
+        }
+
+        h2, h3 {
+            color: #30D5C8;
+            margin-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #30D5C8;
+            text-align: left;
+        }
+
+        th {
+            background-color: #444;
+        }
+
+        button {
+            padding: 12px 20px;
+            background-color: #30D5C8;
+            color: #101010;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #1ba7a6;
+        }
+    </style>
+</head>
+<body>
+    <div class="logo">
+        <img src="C:\\Users\\Atharva Padwal\\Downloads\\Screenshot 2025-02-15 185319.png" alt="Logo">
+    </div>
+
+    <div class="container">
+        <h1>Final Health and Fitness Report</h1>
+
+        <div id="userDetails"></div>
+        <div id="healthAnalysis"></div>
+        <div id="necessaryLimits"></div>
+
+        <button onclick="downloadPDF()">Download PDF</button>
+        <button onclick="goBackToIndex()">Back to Home</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
+    <script>
+        async function displayUserDetails() {
+            const params = new URLSearchParams(window.location.search);
+            const userDetails = `
+                <h2>User Details</h2>
+                <table>
+                    <tr><th>Name</th><td>${params.get('name')}</td></tr>
+                    <tr><th>Age</th><td>${params.get('age')}</td></tr>
+                    <tr><th>Gender</th><td>${params.get('gender')}</td></tr>
+                    <tr><th>Height</th><td>${params.get('heightFeet')} feet ${params.get('heightInches')} inches</td></tr>
+                    <tr><th>Weight</th><td>${params.get('weight')} kg</td></tr>
+                    <tr><th>Phone</th><td>${params.get('phone')}</td></tr>
+                    <tr><th>Activeness</th><td>${params.get('activeness')}</td></tr>
+                    <tr><th>Goal</th><td>${params.get('goal')}</td></tr>
+                </table>
+            `;
+            document.getElementById('userDetails').innerHTML = userDetails;
+        }
+
+        async function displayHealthAnalysis() {
+            const params = new URLSearchParams(window.location.search);
+            const weight = parseFloat(params.get('weight'));
+            const heightFeet = parseFloat(params.get('heightFeet'));
+            const heightInches = parseFloat(params.get('heightInches'));
+            const age = parseInt(params.get('age'));
+            const gender = params.get('gender');
+            const goal = params.get('goal');
+
+            const height = (heightFeet * 12) + heightInches; // convert height to inches
+            const heightInCm = height * 2.54; // convert height to cm
+
+            const bmi = weight / ((heightInCm / 100) * (heightInCm / 100));
+            let bmiStatus = bmi < 18.5 ? 'Underweight' : bmi < 24.9 ? 'Normal weight' : bmi < 29.9 ? 'Overweight' : 'Obese';
+
+            const targetBmi = 22; // Target BMI for a healthy weight
+            const targetWeight = targetBmi * ((heightInCm / 100) * (heightInCm / 100));
+            const weightChangeNeeded = (targetWeight - weight).toFixed(2);
+
+            let targetSteps;
+            if (bmi < 20) {
+                targetSteps = 10000;
+            } else if (bmi < 40) {
+                targetSteps = 12000;
+            } else {
+                targetSteps = 15000;
+            }
+
+            const necessaryLimits = {
+                "Bone Weight (kg)": weight * 0.15,
+                "Muscle Mass (kg)": weight * 0.4,
+                "Water Intake (litres/day)": (weight * 40 / 1000).toFixed(2),
+                "Weight Change Needed (kg)": weightChangeNeeded,
+                "Target BMI": targetBmi,
+                "Target Steps per day": targetSteps
+            };
+
+            const actualValues = {
+                "Bone Weight (kg)": weight * 0.12,
+                "Muscle Mass (kg)": weight * 0.35,
+                "Water Intake (litres/day)": (weight * 35 / 1000).toFixed(2)
+            };
+
+            const fatPercentage = gender === 'male'
+                ? (1.20 * bmi) + (0.23 * age) - 16.2
+                : (1.20 * bmi) + (0.23 * age) - 5.4;
+
+            const healthAnalysis = `
+                <h2>Health Analysis</h2>
+                <table>
+                    <tr><th>Parameter</th><th>Value</th></tr>
+                    <tr><td>Body Mass Index (BMI)</td><td>${bmi.toFixed(2)} (${bmiStatus})</td></tr>
+                    <tr><td>Goal Calories (kcal/day)</td><td>${weight * 24 + (goal === 'gain' ? 500 : goal === 'lose' ? -500 : 0)}</td></tr>
+                    <tr><td>Fat Percentage (%)</td><td>${fatPercentage.toFixed(2)}</td></tr>
+                    ${Object.keys(actualValues).map(param => {
+                        return `<tr><td>${param}</td><td>${actualValues[param]}</td></tr>`;
+                    }).join('')}
+                </table>
+            `;
+            document.getElementById('healthAnalysis').innerHTML = healthAnalysis;
+
+            const necessaryLimitsHtml = `
+                <h2>Necessary Limits</h2>
+                <table>
+                    <tr><th>Parameter</th><th>Value</th></tr>
+                    ${Object.keys(necessaryLimits).map(param => {
+                        return `<tr><td>${param}</td><td>${necessaryLimits[param]}</td></tr>`;
+                    }).join('')}
+                </table>
+            `;
+            document.getElementById('necessaryLimits').innerHTML = necessaryLimitsHtml;
+        }
+
+        function goBackToIndex() {
+            window.location.href = "result.html";
+        }
+
+        async function downloadPDF() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            // Ensure data is loaded before generating PDF
+            await displayUserDetails();
+            await displayHealthAnalysis();
+
+            // Add title
+            doc.setFontSize(20);
+            doc.text('Final Health and Fitness Report', 20, 20);
+
+            // Add user details
+            doc.setFontSize(12);
+            doc.text('User Details:', 20, 40);
+            doc.autoTable({
+                startY: 50,
+                head: [['Parameter', 'Value']],
+                body: Array.from(document.querySelectorAll('#userDetails table tr')).map(row => [
+                    row.children[0].innerText,
+                    row.children[1].innerText
+                ]),
+                theme: 'grid',
+            });
+
+            // Add health analysis
+            doc.text('Health Analysis:', 20, doc.lastAutoTable.finalY + 20);
+            doc.autoTable({
+                startY: doc.lastAutoTable.finalY + 30,
+                head: [['Parameter', 'Value']],
+                body: Array.from(document.querySelectorAll('#healthAnalysis table tr')).map(row => [
+                    row.children[0].innerText,
+                    row.children[1].innerText
+                ]),
+                theme: 'grid',
+            });
+
+            // Add necessary limits
+            doc.text('Necessary Limits:', 20, doc.lastAutoTable.finalY + 20);
+            doc.autoTable({
+                startY: doc.lastAutoTable.finalY + 30,
+                head: [['Parameter', 'Value']],
+                body: Array.from(document.querySelectorAll('#necessaryLimits table tr')).map(row => [
+                    row.children[0].innerText,
+                    row.children[1].innerText
+                ]),
+                theme: 'grid',
+            });
+
+            // Save the PDF
+            doc.save('Health_and_Fitness_Report.pdf');
+        }
+
+        window.onload = function() {
+            displayUserDetails();
+            displayHealthAnalysis();
+        };
+    </script>
+</body>
+</html>

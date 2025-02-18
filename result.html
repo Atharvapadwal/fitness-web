@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health and Fitness Results</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #101010;
+            color:#0FFFFF;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 80%;
+            margin: auto;
+            background-color: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            margin-top: 50px;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+        }
+
+        .logo {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .logo img {
+            height: 80px; /* Adjust this value as needed */
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .logo:hover img {
+            transform: scale(1.1); /* Slightly enlarge the logo on hover */
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.6); /* Add a glowing effect */
+        }
+
+        h1 {
+            text-align: center;
+            color: #0FFFFF;
+            font-size: 2.5em;
+        }
+
+        h2 {
+            color: #0FFFFF;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #0FFFFF;
+            text-align: left;
+        }
+
+        th {
+            background-color: #444;
+        }
+
+        .buttons-container {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        button {
+            padding: 12px 20px;
+            background-color: #0FFFFF;
+            color: #101010;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin: 10px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #1ba7a6;
+        }
+
+        .chart-container {
+            width: 80%;
+            margin: 20px auto;
+        }
+
+        .back-button {
+            padding: 12px 20px;
+            background-color: #0FFFFF;
+            color: #101010;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .back-button:hover {
+            background-color: #1ba7a6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">
+            <img src="C:/Users/Atharva Padwal/Downloads/Screenshot%202025-02-15%20185319.png" alt="FitTrack Logo"> <!-- Replace "logo.png" with the path to your logo image -->
+        </div>
+        <h1>Health and Fitness Results</h1>
+
+        <div id="results"></div>
+
+        <div class="chart-container">
+            <canvas id="comparisonChart"></canvas>
+        </div>
+
+        <div class="buttons-container">
+            <button onclick="window.location.href='diet.html'">Diet</button>
+            <button onclick="window.location.href='sleep.html'">Happy Hours</button>
+            <button onclick="window.location.href='workout.html'">Workout</button>
+            <button onclick="window.location.href='calorie.html'">Calorie Chart</button>
+            <button onclick="generateReport()">View Final Report</button>
+        </div>
+
+        <!-- Back Button -->
+        <div class="back-button-container" style="text-align: center;">
+            <button class="back-button" onclick="goBackToResult()">Back</button>
+        </div>
+
+        <script>
+            function calculateResults() {
+                const params = new URLSearchParams(window.location.search);
+                const weight = parseFloat(params.get('weight'));
+                const heightFeet = parseFloat(params.get('heightFeet'));
+                const heightInches = parseFloat(params.get('heightInches'));
+                const goal = params.get('goal');
+                const age = parseInt(params.get('age'));
+                const gender = params.get('gender');
+
+                const height = (heightFeet * 12) + heightInches; // convert height to inches
+                const heightInCm = height * 2.54; // convert height to cm
+
+                const bmi = weight / ((heightInCm / 100) * (heightInCm / 100));
+                let bmiStatus = bmi < 18.5 ? 'Underweight' : bmi < 24.9 ? 'Normal weight' : bmi < 29.9 ? 'Overweight' : 'Obese';
+
+                // Calculate body fat percentage
+                const fatPercentage = gender === 'male'
+                    ? (1.20 * bmi) + (0.23 * age) - 16.2
+                    : (1.20 * bmi) + (0.23 * age) - 5.4;
+
+                const necessaryLimits = {
+                    "Bone Weight (kg)": weight * 0.15,
+                    "Muscle Mass (kg)": weight * 0.4,
+                    "Water Intake (litres/day)": (weight * 40 / 1000).toFixed(2)
+                };
+
+                const actualValues = {
+                    "Bone Weight (kg)": weight * 0.12,
+                    "Muscle Mass (kg)": weight * 0.35,
+                    "Water Intake (litres/day)": (weight * 35 / 1000).toFixed(2)
+                };
+
+                const resultHtml = `<h2>Results</h2><table><tr><th>Parameter</th><th>Value</th></tr>
+                    <tr><td>Body Mass Index (BMI)</td><td>${bmi.toFixed(2)} (${bmiStatus})</td></tr>
+                    <tr><td>Goal Calories (kcal/day)</td><td>${weight * 24 + (goal === 'gain' ? 500 : goal === 'lose' ? -500 : 0)}</td></tr>
+                    <tr><td>Fat Percentage (%)</td><td>${fatPercentage.toFixed(2)}</td></tr>
+                    ${Object.keys(actualValues).map(param => {
+                        return `<tr><td>${param}</td><td>${actualValues[param]}</td></tr>`;
+                    }).join('')}`
+                    + `</table>`;
+
+                document.getElementById('results').innerHTML = resultHtml;
+
+                const ctx = document.getElementById('comparisonChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: Object.keys(actualValues),
+                        datasets: [
+                            {
+                                label: 'Necessary Limit',
+                                data: Object.values(necessaryLimits),
+                                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                                borderColor: '#36A2EB',
+                                borderWidth: 1,
+                                barThickness: 30 
+                            },
+                            {
+                                label: 'Actual Value',
+                                data: Object.values(actualValues),
+                                backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                                borderColor: '#FF6384',
+                                borderWidth: 1,
+                                barThickness: 30 
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                labels: {
+                                    color: '#30D5C8' 
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    color: '#30D5C8'
+                                }
+                            },
+                            x: {
+                                ticks: {
+                                    color: '#30D5C8'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            function saveDataToLocalStorage() {
+                const params = new URLSearchParams(window.location.search);
+                const data = {
+                    name: params.get('name'),
+                    age: params.get('age'),
+                    gender: params.get('gender'),
+                    weight: params.get('weight'),
+                    heightFeet: params.get('heightFeet'),
+                    heightInches: params.get('heightInches'),
+                    phone: params.get('phone'),
+                    activeness: params.get('activeness'),
+                    goal: params.get('goal')
+                };
+                localStorage.setItem('fitnessData', JSON.stringify(data));
+            }
+
+            function loadDataFromLocalStorage() {
+                const data = JSON.parse(localStorage.getItem('fitnessData'));
+                if (data) {
+                    const params = new URLSearchParams(data);
+                    window.location.search = params.toString();
+                }
+            }
+
+            function goBackToResult() {
+                window.location.href = "index.html";
+            }
+
+            function generateReport() {
+                const params = new URLSearchParams(window.location.search);
+                const name = params.get('name');
+                const age = params.get('age');
+                const gender = params.get('gender');
+                const weight = params.get('weight');
+                const heightFeet = params.get('heightFeet');
+                const heightInches = params.get('heightInches');
+                const phone = params.get('phone');
+                const activeness = params.get('activeness');
+                const goal = params.get('goal');
+
+                const queryParams = `name=${name}&age=${age}&gender=${gender}&heightFeet=${heightFeet}&heightInches=${heightInches}&weight=${weight}&phone=${phone}&activeness=${activeness}&goal=${goal}`;
+                window.location.href = `report.html?${queryParams}`;
+            }
+
+            window.onload = function() {
+                if (!window.location.search) {
+                    loadDataFromLocalStorage();
+                } else {
+                    saveDataToLocalStorage();
+                }
+                calculateResults();
+            };
+        </script>
+    </div>
+</body>
+</html>

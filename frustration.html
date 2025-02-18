@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frustration Remover</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #101010;
+            color: #0FFFFF;
+        }
+
+        header {
+            background-color: #101010;
+            padding: 1em 0;
+            text-align: center;
+            position: relative;
+        }
+
+        header img {
+            width: 100px;
+            transition: transform 0.3s ease;
+        }
+
+        header img:hover {
+            transform: scale(1.1);
+        }
+
+        main {
+            padding: 2em;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1, h2 {
+            color: #0FFFFF;
+        }
+
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 1em;
+            background-color: #1c1c1c;
+            color: #0FFFFF;
+            border: none;
+            border-radius: 5px;
+        }
+
+        button {
+            padding: 0.5em 1em;
+            border-radius: 5px;
+            border: none;
+            background-color: #0FFFFF;
+            color: #101010;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 1em;
+        }
+
+        button:hover {
+            background-color: #0bbbbb;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2em;
+        }
+
+        .recorder {
+            display: flex;
+            flex-direction: column;
+            gap: 1em;
+            margin-top: 2em;
+        }
+
+        .recorder button {
+            width: 200px;
+            align-self: center;
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let mediaRecorder;
+            let audioChunks = [];
+
+            document.getElementById('start-recording').addEventListener('click', async () => {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                mediaRecorder.start();
+
+                mediaRecorder.addEventListener('dataavailable', event => {
+                    audioChunks.push(event.data);
+                });
+
+                mediaRecorder.addEventListener('stop', () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    audioChunks = [];
+                    const audioUrl = URL.createObjectURL(audioBlob);
+                    const audio = new Audio(audioUrl);
+                    audio.play();
+                });
+            });
+
+            document.getElementById('stop-recording').addEventListener('click', () => {
+                mediaRecorder.stop();
+            });
+        });
+    </script>
+</head>
+<body>
+    <header>
+        <img src="C:\\Users\\Atharva Padwal\\Downloads\\Screenshot 2025-02-15 185319.png" alt="Website Logo">
+        <h1>Frustration Remover</h1>
+    </header>
+    <main>
+        <div class="button-container">
+            <button onclick="window.location.href='mental.html'">Back</button>
+        </div>
+        <section>
+            <h2>Write Your Frustrations</h2>
+            <textarea placeholder="Write down your frustrations and problems here..."></textarea>
+        </section>
+        <section class="recorder">
+            <h2>Voice Recorder</h2>
+            <button id="start-recording">Start Recording</button>
+            <button id="stop-recording">Stop Recording</button>
+        </section>
+    </main>
+</body>
+</html>
